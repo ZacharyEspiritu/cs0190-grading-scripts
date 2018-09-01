@@ -1,8 +1,8 @@
 from re import compile
 from os.path import basename, dirname
 
-
 course_assignments_dir = "/course/cs0190/assignments/"
+
 config_impl = "impl_name"
 config_test = "test_name"
 config_imports = "import_replacements"
