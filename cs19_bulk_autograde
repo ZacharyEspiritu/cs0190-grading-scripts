@@ -1,0 +1,3 @@
+#!/bin/bash -p
+
+python3 /course/cs0190/tabin/cs0190-grading-scripts/cs19_bulk_autograde.py "$@"

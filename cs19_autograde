@@ -1,0 +1,3 @@
+#!/bin/bash -p
+
+python3 cs19_autograde.py "$@"
