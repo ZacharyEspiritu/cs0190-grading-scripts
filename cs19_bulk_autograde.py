@@ -4,6 +4,7 @@ import json
 import glob
 import run_analysis
 import constants
+import common
 from re import match
 from subprocess import run
 from tempfile import NamedTemporaryFile as tempfile
@@ -40,23 +41,8 @@ def main(argv):
 		print("Could not find config.json for the given assignment")
 		sys.exit(1)
 
-	# Open and store the config file
-	with open(config_path) as config_file:
-		config = json.load(config_file)
-
 	# Verify the config file has the necessary variables and points to files that exist
-	if constants.config_impl not in config.keys() and constants.config_test in config.keys():
-		print("config.json must contain an impl_name and test_name")
-		sys.exit(1)
-	elif constants.config_imports in config:
-		import_replacements = config[constants.config_imports]
-		for key in import_replacements:
-			if not(os.path.isfile(import_replacements[key])):
-				print("Could not find import replacement file: %s" % import_replacements[key])
-				sys.exit(1)
-	else:
-		impl_name = config[constants.config_impl]
-		test_name = config[constants.config_test]
+	impl_name, test_name = common.verify_config(config_path)
 
 	# Verify that all components of an assignment are present
 	wheat_dir = assignment_dir + constants.wheat_dir
@@ -88,16 +74,16 @@ def main(argv):
 			# in some way with other files
 			for f in files:
 				if run_impls and impl_name in f:
-					runs.extend([concat_inputs(f, test, assignment_dir, True)
+					runs.extend([common.concat_inputs(f, test, assignment_dir, True)
 						for test in tests])
 				elif run_tests and test_name in f:
-					runs.extend([concat_inputs(impl, f, assignment_dir, False)
+					runs.extend([common.concat_inputs(impl, f, assignment_dir, False)
 						for impl in wheats + chaffs])
 
 	# Run all of the wheats and chaffs against instructor tests. They won't be added
 	# to the nice output, but their result will be in the result folders if necessary
 	for f in wheats + chaffs:
-		runs.extend([concat_inputs(f, test, assignment_dir, False) for test in tests])
+		runs.extend([common.concat_inputs(f, test, assignment_dir, False) for test in tests])
 
 	runs_str = "\n".join(runs)
 	#print(runs_str)
@@ -130,13 +116,6 @@ def analyze(assignment_dir, run_impls, run_tests):
 	with open(assignment_dir + "/result/results.json") as result:
 		result_json = json.load(result)
 		run_analysis.analyze(assignment_dir, result_json, run_impls, run_tests)
-
-def concat_inputs(impl_file, test_file, assignment_dir, student_impl):
-	# Concatenates the given inputs into a line that the autograder will run
-	# Format is implementation file, test file, output directory
-	return "%s %s %s/result/%s_%s_%s" % (impl_file, test_file, assignment_dir, \
-		os.path.basename(impl_file), os.path.basename(test_file), \
-		constants.id_from_handin(impl_file if student_impl else test_file))
 
 def should_run(arg, run_analysis_only, arg_char):
 	# Returns true if arg indicates arg_char category ('t' for test or 'i' for impl) should be run

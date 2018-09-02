@@ -1,4 +1,5 @@
 import constants
+import common
 import csv
 from sys import exit
 
@@ -23,7 +24,7 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 		run_result = run["result"]
 		# If there's an issue, just skip it and it'll be manually resolved
 		if "Err" in run_result:
-			print_run_error(result_impl, result_test, \
+			common.print_run_error(result_impl, result_test, \
 				"produced a %s error." % (run_result["Err"]))
 			continue
 		check_blocks = run_result["Ok"]
@@ -34,7 +35,7 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 				continue
 
 			# Initialize this (eventually) row of the CSV
-			student_id = constants.id_from_handin(result_impl)
+			student_id = common.id_from_handin(result_impl)
 			impl_dict[student_id] = {
 				"id": student_id
 			}
@@ -45,8 +46,8 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 				check_block_name = check_block["name"]
 				tests_ran = False
 				if check_block["error"] and check_block_name not in impl_test_counts:
-					print("ERROR: The first user failed a check block, and I can't account " \
-						"for that yet. Please put a user with all check blocks passing first, " \
+					print("ERROR: The first user failed a check block, and I can't account " + \
+						"for that yet. Please put a user with all check blocks passing first, " + \
 						"then re-run the script with the -a flag.")
 					exit(1)
 				elif check_block["error"]:
@@ -83,24 +84,13 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 
 			# Only initialize this row if another wheat/chaff hasn't been run
 			# yet on this student
-			student_id = constants.id_from_handin(result_test)
+			student_id = common.id_from_handin(result_test)
 			if student_id not in test_dict:
 				test_dict[student_id] = {
 					"id": student_id
 				}
-			failed_check_blocks = []
-			# Only look to see if the student's tests failed any tests in the check block,
-			# we don't care how many
-			for check_block in check_blocks:
-				check_block_name = check_block["name"]
-				if check_block["error"]:
-					failed_check_blocks.append(check_block_name)
-					continue
-				else:
-					for test in check_block["tests"]:
-						if not(test["passed"]):
-							failed_check_blocks.append(check_block_name)
-							break
+
+			failed_check_blocks = get_failed_check_blocks(check_blocks)
 
 			if result_impl not in test_fields:
 				test_fields.append(result_impl)
@@ -109,7 +99,7 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 			test_dict[student_id][result_impl] = \
 				"" if len(failed_check_blocks) == 0 else ";".join(failed_check_blocks)
 		else:
-			print_run_error(result_impl, result_test, \
+			common.print_run_error(result_impl, result_test, \
 				"was not recognized as a student submission.")
 
 	# Now that we've stored student data in the proper dictionaries, write them to CSVs
@@ -138,5 +128,19 @@ def write_csv(filename, fields, dict):
 			writer.writerow(dict[key])
 		print("Successfully wrote report to %s" % filename)
 
-def print_run_error(impl_file, test_file, message):
-	print("WARNING: Run on impl: %s  and test: %s %s" % (impl_file, test_file, message))
+def get_failed_check_blocks(check_blocks):
+	# Only look to see if the student's tests failed any tests in the check block,
+	# we don't care how many
+	failed_check_blocks = []
+	for check_block in check_blocks:
+		check_block_name = check_block["name"]
+		if check_block["error"]:
+			failed_check_blocks.append(check_block_name)
+			continue
+		else:
+			for test in check_block["tests"]:
+				if not(test["passed"]):
+					failed_check_blocks.append(check_block_name)
+					break
+
+	return failed_check_blocks

@@ -13,9 +13,6 @@ test_dir = "/tests"
 handin_dir = "/handins"
 impl_result_file = "/result/impls.csv"
 test_result_file = "/result/tests.csv"
+result_regex = "result/*_%s/results.json"
 all_impl_keys = ["id", "passed", "total"]
 arr_extension = "*.arr"
-
-
-def id_from_handin(filepath):
-	return basename(dirname(filepath))
