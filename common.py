@@ -2,6 +2,7 @@ import constants
 import json
 import sys
 import os
+from subprocess import run
 
 def verify_config(config_path):
 	# Open and store the config file
@@ -13,13 +14,21 @@ def verify_config(config_path):
 		sys.exit(1)
 	elif constants.config_imports in config:
 		import_replacements = config[constants.config_imports]
+		replacement_arr = []
 		for key in import_replacements:
 			if not(os.path.isfile(import_replacements[key])):
 				print("Could not find import replacement file: %s" % import_replacements[key])
 				sys.exit(1)
-			# TODO: actually replace stuff
+			replacement_arr.append((key, import_replacements[key]))
 
-	return (config[constants.config_impl], config[constants.config_test])
+	return (config[constants.config_impl], config[constants.config_test], replacement_arr)
+
+def replace_on_files(files, replacement_arr):
+	for name, replacement in replacement_arr:
+		for f in files:
+			print("%s %s %s" % (name, replacement, f))
+			run(["/course/cs0190/tabin/cs0190-grading-scripts/substitute.sh", \
+				name, replacement, f])
 
 def concat_inputs(impl_file, test_file, assignment_dir, student_impl):
 	# Concatenates the given inputs into a line that the autograder will run

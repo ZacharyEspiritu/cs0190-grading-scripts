@@ -28,7 +28,7 @@ def main(argv):
 		sys.exit(1)
 
 	# Verify the config file has the necessary variables and points to files that exist
-	impl_name, test_name = common.verify_config(config_path)
+	impl_name, test_name, replacement_arr = common.verify_config(config_path)
 
 	# Verify that all components of an assignment are present
 	wheat_dir = assignment_dir + constants.wheat_dir
@@ -44,6 +44,8 @@ def main(argv):
 	wheats = glob.glob(os.path.join(wheat_dir, constants.arr_extension), recursive=False)
 	chaffs = glob.glob(os.path.join(chaff_dir, constants.arr_extension), recursive=False)
 	tests = glob.glob(os.path.join(test_dir, constants.arr_extension), recursive=False)
+
+	common.replace_on_files(wheats + chaffs + tests, replacement_arr)
 
 	# Get all student handin directories and create the list of file combinations to run
 	runs = []

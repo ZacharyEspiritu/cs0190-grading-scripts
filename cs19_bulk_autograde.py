@@ -42,7 +42,7 @@ def main(argv):
 		sys.exit(1)
 
 	# Verify the config file has the necessary variables and points to files that exist
-	impl_name, test_name = common.verify_config(config_path)
+	impl_name, test_name, replacement_arr = common.verify_config(config_path)
 
 	# Verify that all components of an assignment are present
 	wheat_dir = assignment_dir + constants.wheat_dir
