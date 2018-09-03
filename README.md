@@ -68,3 +68,16 @@ The script can optionally be run with parameters put in between the script name 
  - `cs19_bulk_autograde -a docdiff` - Assumes that the actual grader has already been run and the `result` folder is populated with individual runs. Produces both output CSV files based on the existing results.
    - `cs19_bulk_autograde -ai docdiff` - Only runs analysis on student implementations. Combination of `-a` and `-i` behavior.
    - `cs19_bulk_autograde -at docdiff` - Only runs analysis on student tests. Combination of `-a` and `-t` behavior.
+
+## cs19\_autograde
+This script runs all the wheats and chaffs on a single student submission. There are no extra flags, and it assumes the same directory structure and prerequisites of the script above. Output is simply printed to stdout when the grading is complete, letting individual UTAs easily double check the bulk autograder, which was most likely run by the HTAs. The way to call the script is:
+
+`cs19_autograde <assignment> <student_id>`
+
+For example, if I wanted to get a printed report of student 1's performance on DocDiff, I would run:
+
+`cs19_autograde docdiff 1`
+
+
+
+
