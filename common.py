@@ -9,12 +9,12 @@ def verify_config(config_path):
 	with open(config_path) as config_file:
 		config = json.load(config_file)
 
+	replacement_arr = []
 	if constants.config_impl not in config.keys() and constants.config_test in config.keys():
 		print("config.json must contain an impl_name and test_name")
 		sys.exit(1)
 	elif constants.config_imports in config:
 		import_replacements = config[constants.config_imports]
-		replacement_arr = []
 		for key in import_replacements:
 			if not(os.path.isfile(import_replacements[key])):
 				print("Could not find import replacement file: %s" % import_replacements[key])

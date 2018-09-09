@@ -94,7 +94,7 @@ def main(argv):
 	temp = tempfile(delete=True)
 	temp.write(str.encode(runs_str))
 	temp.seek(0)
-	run(["/home/jswrenn/projects/powder-monkey/evaluate/evaluate-many.sh", "prehook.sh"], stdin=temp)
+	run(["/home/jswrenn/projects/powder-monkey/evaluate/evaluate-many.sh", "/course/cs0190/tabin/cs0190-grading-scripts/prehook.sh"], stdin=temp)
 	temp.close()
 
 	# Once all the tests have been run, run analysis
