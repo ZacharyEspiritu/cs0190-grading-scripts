@@ -98,9 +98,6 @@ def analyze(assignment_dir, result_json, analyze_impls, analyze_tests):
 			# Put the names of all of the check blocks that failed the wheat/chaff in the cell
 			test_dict[student_id][result_impl] = \
 				"" if len(failed_check_blocks) == 0 else ";".join(failed_check_blocks)
-		else:
-			common.print_run_error(result_impl, result_test, \
-				"was not recognized as a student submission.")
 
 	# Now that we've stored student data in the proper dictionaries, write them to CSVs
 	if analyze_impls:

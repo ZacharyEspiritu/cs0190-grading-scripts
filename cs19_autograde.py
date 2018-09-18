@@ -45,8 +45,6 @@ def main(argv):
 	chaffs = glob.glob(os.path.join(chaff_dir, constants.arr_extension), recursive=False)
 	tests = glob.glob(os.path.join(test_dir, constants.arr_extension), recursive=False)
 
-	common.replace_on_files(wheats + chaffs + tests, replacement_arr)
-
 	# Get all student handin directories and create the list of file combinations to run
 	runs = []
 	files = glob.glob(os.path.join(handin_dir, constants.arr_extension))
@@ -55,6 +53,8 @@ def main(argv):
 	if not(found_impl) or not(found_test):
 		print("ERROR: The student did not submit all of the required files")
 		sys.exit(1)
+
+	common.replace_on_files(wheats + chaffs + files, replacement_arr)
 
 	# For each .arr file the student handed in, see if it needs to be run
 	# in some way with other files
@@ -71,6 +71,7 @@ def main(argv):
 
 	# Pass these arguments into the actual script
 	# (tempfile required for the stdin parameter) along with the prehook
+	print()
 	temp = tempfile(delete=True)
 	temp.write(str.encode(runs_str))
 	temp.seek(0)

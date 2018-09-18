@@ -26,7 +26,6 @@ def verify_config(config_path):
 def replace_on_files(files, replacement_arr):
 	for name, replacement in replacement_arr:
 		for f in files:
-			print("%s %s %s" % (name, replacement, f))
 			run(["/course/cs0190/tabin/cs0190-grading-scripts/substitute.sh", \
 				name, replacement, f])
 
@@ -41,4 +40,4 @@ def id_from_handin(filepath):
 	return os.path.basename(os.path.dirname(filepath))
 
 def print_run_error(impl_file, test_file, message):
-	print("WARNING: Run on impl: %s  and test: %s %s" % (impl_file, test_file, message))
+	print("**** WARNING ****\nRun on impl:%s\nAnd test: %s\n%s" % (impl_file, test_file, message))
