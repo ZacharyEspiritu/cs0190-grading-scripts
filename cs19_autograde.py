@@ -52,7 +52,6 @@ def main(argv):
 	found_test = os.path.join(handin_dir, test_name) in files
 	if not(found_impl) or not(found_test):
 		print("ERROR: The student did not submit all of the required files")
-		sys.exit(1)
 
 	common.replace_on_files(wheats + chaffs + files, replacement_arr)
 
@@ -62,7 +61,7 @@ def main(argv):
 		if impl_name in f:
 			runs.extend([common.concat_inputs(f, test, assignment_dir, True)
 				for test in tests])
-		elif test_name in f:
+		elif test_name in f and wheats + chaffs != []:
 			runs.extend([common.concat_inputs(impl, f, assignment_dir, False)
 				for impl in wheats + chaffs])
 
