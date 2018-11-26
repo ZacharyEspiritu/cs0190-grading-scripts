@@ -2,3 +2,5 @@
 stdout.txt
 
 __pycache__/
+.vscode/
+csvs/
